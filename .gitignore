@@ -1,0 +1,30 @@
+# Environment files
+.env
+.env*.local
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Databases & local data
+data/
+*.db
+*.sqlite3
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+pyvenv.cfg
+
+# Windows / Virtualenv executables and scripts
+*.exe
+activate*
+
+# Operating System files
+.DS_Store
+Thumbs.db
