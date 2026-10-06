@@ -1,1 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Madras Foodies Consultancy{% endblock %}</title>
+  <meta name="description" content="Café, restaurant and hotel consultancy by Madras Foodies Consultancy.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍽️</text></svg>">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="{{ url_for('main.home') }}">madras<span>foodies.</span></a>
+    <button class="menu-toggle" aria-label="Open menu">☰</button>
+    <nav class="nav">
+      <a href="{{ url_for('main.home') }}" class="{% if request.endpoint == 'main.home' %}active{% endif %}">Home</a>
+      <a href="{{ url_for('main.projects') }}" class="{% if request.endpoint == 'main.projects' %}active{% endif %}">Projects</a>
+      <a href="{{ url_for('main.services') }}" class="{% if request.endpoint == 'main.services' %}active{% endif %}">Our Services</a>
+      <a href="{{ url_for('main.about') }}" class="{% if request.endpoint == 'main.about' %}active{% endif %}">About Us</a>
+      <a class="nav-cta {% if request.endpoint == 'main.contact' %}active{% endif %}" href="{{ url_for('main.contact') }}">Contact ↗</a>
+    </nav>
+  </header>
 
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container">
+          {% for category, message in messages %}
+            <div class="flash-alert flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div>
+      <div class="brand">madras<span>foodies.</span></div>
+      <p>Turning food ideas into successful businesses across India and internationally.</p>
+      <div class="social-links-footer">
+        <a href="https://www.instagram.com/madrasfoodiesconsultancy?stkn=c212cW80NTV5NGFh" target="_blank" rel="noopener noreferrer" class="social-badge">
+          📷 Instagram: @madrasfoodiesconsultancy ↗
+        </a>
+      </div>
+      <p class="copyright">© 2026 Madras Foodies Consultancy. All rights reserved.</p>
+    </div>
+    <div>
+      <p class="footer-title">Explore</p>
+      <a href="{{ url_for('main.home') }}">Home</a>
+      <a href="{{ url_for('main.projects') }}">Projects</a>
+      <a href="{{ url_for('main.services') }}">Services</a>
+      <a href="{{ url_for('main.about') }}">About Us</a>
+      <a href="{{ url_for('main.contact') }}">Contact</a>
+    </div>
+    <div>
+      <p class="footer-title">Contact & Location</p>
+      <p><strong>Chennai, Tamil Nadu, India</strong></p>
+      <p>📞 Phone: <a href="tel:+919042853189"><strong>+91 90428 53189</strong></a></p>
+      <p>📧 Email: <a href="mailto:madrasfoodiesconsultancy@gmail.com"><strong>madrasfoodiesconsultancy@gmail.com</strong></a></p>
+      <p>Consultancy for cafés, restaurants, cloud kitchens & hotels.</p>
+      <a class="text-link" href="{{ url_for('main.contact') }}">Schedule a Consultation →</a>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp Quick Button -->
+  <a href="https://wa.me/919042853189?text=Hi%20Sir%2C%20I%20would%20like%20to%20inquire%20about%20Madras%20Foodies%20Consultancy%20services%20for%20my%20food%20business." class="floating-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.074-2.185-.544-1.745-.724-2.853-2.505-2.94-2.621-.087-.116-.708-.943-.708-1.799 0-.856.449-1.277.608-1.451.159-.174.347-.217.463-.217.116 0 .232.001.333.006.106.005.249-.04.39.298.144.347.491 1.2.535 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.072.376-.043.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086s1.011.477 1.185.564.289.13.332.202c.045.072.045.419-.099.824zm-3.392-12.416c-5.514 0-10 4.486-10 10 0 1.761.458 3.418 1.258 4.862l-1.338 4.887 5.011-1.314c1.401.764 3.005 1.196 4.708 1.196 5.514 0 10-4.486 10-10 0-5.515-4.486-10-10-10z"/>
+    </svg>
+    <span>Chat on WhatsApp</span>
+  </a>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

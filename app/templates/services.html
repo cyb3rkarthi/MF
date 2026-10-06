@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Our Services — Madras Foodies Consultancy{% endblock %}
+{% block content %}
+<section class="page-hero section">
+  <span class="eyebrow">04 / Our Services</span>
+  <h1>Everything you need to build, launch, and operate a food business.</h1>
+  <p>From site feasibility studies to kitchen planning, recipe standardisation, SOPs, and post-opening audits, our consultancy covers the full food-service lifecycle.</p>
+</section>
+
+<section class="section service-list">
+  {% set services = [
+    ("01","Site Analysis & Feasibility","Site inspection, business feasibility studies, footfall analysis, and competition mapping to help you choose the right location and winning business strategy."),
+    ("02","Design & Development","Designer and architect selection, kitchen planning, ergonomic layout development, and complete food-service establishment architecture."),
+    ("03","Restaurant Setup","End-to-end setup guidance for reception, dining zones, point-of-sale billing counters, prep kitchens, cold storage, restrooms, and operational areas."),
+    ("04","Menu Planning & Development","Culinary concept design, food selection, recipe costing guides, pricing strategies, food trials, customer tasting panels, and plating aesthetics."),
+    ("05","Kitchen Planning & Equipment","Commercial kitchen layout design, cooking equipment sourcing, exhaust & refrigeration utilities, furniture, crockery, cutlery, linen, and tableware."),
+    ("06","Food Storage & Procurement","Raw material specification lists, vendor selection, bulk purchasing contracts, logistics, cold-chain planning, and hygiene food safety compliance."),
+    ("07","Cost & Quality Management","Food and beverage cost control formulas, real-time inventory management, waste reduction, utility control, and recurring operational audits."),
+    ("08","Staffing & Training","Role profiling, recruitment assistance, interview screening, service culture training, guest relations, upselling techniques, and kitchen brigade mentoring."),
+    ("09","Billing & Printing Solutions","POS billing software and hardware evaluation, inventory integration, printed collateral, menu cards, and daily cash-control documentation."),
+    ("10","Restaurant Concept & Interior Guidance","Concept and thematic branding with detailed interior design specifications, ambiance lighting, and acoustic recommendations."),
+    ("11","Pre-Opening & Launch Support","Pre-opening timeline planning, soft trials, VIP inauguration planning, marketing campaigns, local press releases, and hands-on launch supervision."),
+    ("12","Post-Opening Support & Audits","Regular mystery audits, staff performance appraisals, food consistency reviews, margin optimization, and continuous advisory support."),
+    ("13","SOP Development","Creation of clear Standard Operating Procedures (SOPs) for kitchen prep, hygiene, billing, guest handling, and daily opening/closing checklists.")
+  ] %}
+  <div class="service-list-grid">
+    {% for number, title, description in services %}
+    <a href="{{ url_for('main.contact', service=title) }}" class="service-row">
+      <span class="service-num">{{ number }}</span>
+      <div class="service-content">
+        <h3>{{ title }}</h3>
+        <p>{{ description }}</p>
+      </div>
+      <span class="service-link-badge">Inquire ↗</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="cta section">
+  <span class="eyebrow">Custom Consulting</span>
+  <h2>Have a unique project or need bespoke advisory?</h2>
+  <p>We tailor our advisory packages for single café setups, franchise chains, cloud kitchens, and international restaurants.</p>
+  <a class="button" href="{{ url_for('main.contact') }}">Start a Conversation ↗</a>
+</section>
+{% endblock %}

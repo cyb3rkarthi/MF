@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% block title %}Contact Us — Madras Foodies Consultancy{% endblock %}
+{% block content %}
+<section class="page-hero section">
+  <span class="eyebrow">05 / Start a Project</span>
+  <h1>Tell us about your food business idea.</h1>
+  <p>Share your vision and requirements. Our senior hospitality consultants will review your brief and advise on the next steps.</p>
+</section>
+
+<section class="section contact-section">
+  <div class="contact-layout">
+    <div class="contact-form-card">
+
+      <!-- Form Switcher Tabs -->
+      <div class="form-tabs" role="tablist">
+        <button type="button" class="form-tab-btn {% if active_tab != 'client' and active_tab != 'restaurant' %}active{% endif %}" data-form="contactForm">
+          ✉️ Contact Us
+        </button>
+        <button type="button" class="form-tab-btn {% if active_tab == 'client' %}active{% endif %}" data-form="clientForm">
+          👤 Client Details
+        </button>
+        <button type="button" class="form-tab-btn {% if active_tab == 'restaurant' %}active{% endif %}" data-form="restaurantForm">
+          🍽️ Restaurant Onboarding
+        </button>
+      </div>
+
+      <!-- 1. CONTACT FORM -> madras_foodies.contacts -->
+      <form id="contactForm" class="contact-form form-panel {% if active_tab != 'client' and active_tab != 'restaurant' %}active-panel{% endif %}" action="{{ url_for('main.submit_contact') }}" method="POST">
+        <div class="form-row">
+          <label>
+            Full Name <span class="required">*</span>
+            <input name="name" placeholder="e.g. Anand Kumar" required>
+          </label>
+          <label>
+            Email Address <span class="required">*</span>
+            <input name="email" type="email" placeholder="e.g. anand@example.com" required>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            Phone Number
+            <input name="phone" type="tel" placeholder="e.g. +91 90428 53189">
+          </label>
+          <label>
+            Service Interested In
+            <select name="service" class="service-select">
+              <option value="General Inquiry" {% if not prefill_service %}selected{% endif %}>General Hospitality Consultancy</option>
+              <option value="Site Analysis & Feasibility" {% if prefill_service == 'Site Analysis & Feasibility' %}selected{% endif %}>Site Analysis & Feasibility</option>
+              <option value="Design & Development" {% if prefill_service == 'Design & Development' %}selected{% endif %}>Design & Development</option>
+              <option value="Restaurant Setup" {% if prefill_service == 'Restaurant Setup' %}selected{% endif %}>Restaurant Setup</option>
+              <option value="Menu Planning & Development" {% if prefill_service == 'Menu Planning & Development' %}selected{% endif %}>Menu Planning & Development</option>
+              <option value="Kitchen Planning & Equipment" {% if prefill_service == 'Kitchen Planning & Equipment' %}selected{% endif %}>Kitchen Planning & Equipment</option>
+              <option value="Food Storage & Procurement" {% if prefill_service == 'Food Storage & Procurement' %}selected{% endif %}>Food Storage & Procurement</option>
+              <option value="Cost & Quality Management" {% if prefill_service == 'Cost & Quality Management' %}selected{% endif %}>Cost & Quality Management</option>
+              <option value="Staffing & Training" {% if prefill_service == 'Staffing & Training' %}selected{% endif %}>Staffing & Training</option>
+              <option value="Billing & Printing Solutions" {% if prefill_service == 'Billing & Printing Solutions' %}selected{% endif %}>Billing & Printing Solutions</option>
+              <option value="Restaurant Concept & Interior Guidance" {% if prefill_service == 'Restaurant Concept & Interior Guidance' %}selected{% endif %}>Restaurant Concept & Interior Guidance</option>
+              <option value="Pre-Opening & Launch Support" {% if prefill_service == 'Pre-Opening & Launch Support' %}selected{% endif %}>Pre-Opening & Launch Support</option>
+              <option value="Post-Opening Support & Audits" {% if prefill_service == 'Post-Opening Support & Audits' %}selected{% endif %}>Post-Opening Support & Audits</option>
+              <option value="SOP Development" {% if prefill_service == 'SOP Development' %}selected{% endif %}>SOP Development</option>
+            </select>
+          </label>
+        </div>
+
+        <label>
+          Project Details / Message <span class="required">*</span>
+          <textarea name="message" rows="5" placeholder="Describe your food concept, location, expected timeline, and requirements..." required>{% if prefill_service %}Hello, I would like to inquire regarding {{ prefill_service }} for our upcoming food project.{% endif %}</textarea>
+        </label>
+
+        <button class="button submit-btn" type="submit">
+          <span class="btn-text">Submit Contact Enquiry ↗</span>
+          <span class="btn-spinner" style="display:none;">Saving to Database...</span>
+        </button>
+        <div id="contactFormMessage" class="form-feedback" role="status" aria-live="polite"></div>
+      </form>
+
+      <!-- 2. CLIENT DETAILS FORM -> madras_foodies.clients -->
+      <form id="clientForm" class="contact-form form-panel {% if active_tab == 'client' %}active-panel{% endif %}" action="{{ url_for('main.submit_client') }}" method="POST" style="{% if active_tab != 'client' %}display:none;{% endif %}">
+        <div class="form-row">
+          <label>
+            Client Full Name <span class="required">*</span>
+            <input name="name" placeholder="e.g. Rajesh Mehra" required>
+          </label>
+          <label>
+            Email Address <span class="required">*</span>
+            <input name="email" type="email" placeholder="e.g. rajesh@example.com" required>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            Phone Number
+            <input name="phone" type="tel" placeholder="e.g. +91 98401 23456">
+          </label>
+          <label>
+            City / Location
+            <input name="location" placeholder="e.g. Chennai, Bangalore, KL">
+          </label>
+        </div>
+
+        <label>
+          Service Required
+          <select name="service">
+            <option value="Full Turnkey Restaurant Setup">Full Turnkey Restaurant Setup</option>
+            <option value="Kitchen Planning & Equipment Procurement">Kitchen Planning & Equipment Procurement</option>
+            <option value="Menu Engineering & Recipe Standardisation">Menu Engineering & Recipe Standardisation</option>
+            <option value="Staff Recruitment & Hospitality Training">Staff Recruitment & Hospitality Training</option>
+            <option value="Pre-Opening Consultation & Audits">Pre-Opening Consultation & Audits</option>
+            <option value="General F&B Advisory">General F&B Advisory</option>
+          </select>
+        </label>
+
+        <label>
+          Client Notes / Requirements
+          <textarea name="notes" rows="4" placeholder="Provide any specific notes, existing concept status, or consultation goals..."></textarea>
+        </label>
+
+        <button class="button submit-btn" type="submit">
+          <span class="btn-text">Register Client Details ↗</span>
+          <span class="btn-spinner" style="display:none;">Saving to Database...</span>
+        </button>
+        <div id="clientFormMessage" class="form-feedback" role="status" aria-live="polite"></div>
+      </form>
+
+      <!-- 3. RESTAURANT DETAILS FORM -> madras_foodies.restaurants -->
+      <form id="restaurantForm" class="contact-form form-panel {% if active_tab == 'restaurant' %}active-panel{% endif %}" action="{{ url_for('main.submit_restaurant') }}" method="POST" style="{% if active_tab != 'restaurant' %}display:none;{% endif %}">
+        <div class="form-row">
+          <label>
+            Restaurant / Business Name <span class="required">*</span>
+            <input name="restaurant_name" placeholder="e.g. Spice Route Bistro" required>
+          </label>
+          <label>
+            Owner / Contact Person <span class="required">*</span>
+            <input name="owner_name" placeholder="e.g. K. Sundaram" required>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            Email Address <span class="required">*</span>
+            <input name="email" type="email" placeholder="e.g. sundaram@spiceroute.com" required>
+          </label>
+          <label>
+            Phone Number <span class="required">*</span>
+            <input name="phone" type="tel" placeholder="e.g. +91 90428 53189" required>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            Location / Area
+            <input name="location" placeholder="e.g. Anna Nagar, Chennai">
+          </label>
+          <label>
+            Cuisine Type
+            <input name="cuisine_type" placeholder="e.g. South Indian / Continental / Café">
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>
+            Seating Capacity
+            <input name="seating_capacity" placeholder="e.g. 60 Seats / Cloud Kitchen">
+          </label>
+          <label>
+            Project Stage
+            <select name="project_stage">
+              <option value="Idea & Concept">Idea & Concept Phase</option>
+              <option value="Site Finalised">Site Finalised</option>
+              <option value="Under Fitout / Construction">Under Fitout / Construction</option>
+              <option value="Operational - Needs Restructuring">Operational - Needs Restructuring</option>
+              <option value="Expanding New Branch">Expanding New Branch</option>
+            </select>
+          </label>
+        </div>
+
+        <label>
+          Restaurant Details & Goals
+          <textarea name="message" rows="4" placeholder="Brief us about your space, target opening date, and specific consulting needs..."></textarea>
+        </label>
+
+        <button class="button submit-btn" type="submit">
+          <span class="btn-text">Register Restaurant ↗</span>
+          <span class="btn-spinner" style="display:none;">Saving to Database...</span>
+        </button>
+        <div id="restaurantFormMessage" class="form-feedback" role="status" aria-live="polite"></div>
+      </form>
+
+    </div>
+
+    <aside class="contact-info-panel">
+      <!-- WhatsApp Direct Chat Card -->
+      <div class="info-block whatsapp-highlight-card">
+        <div class="whatsapp-badge-tag">⚡ Fast Response</div>
+        <h3>💬 Chat with WhatsApp</h3>
+        <p>Connect with senior consultant Yuvaraj directly on WhatsApp for instant consultation and pricing guidance.</p>
+        <a href="https://wa.me/919042853189?text=Hi%20Sir%2C%20I%20would%20like%20to%20inquire%20about%20Madras%20Foodies%20Consultancy%20services%20for%20my%20food%20business." target="_blank" rel="noopener noreferrer" class="whatsapp-chat-button">
+          <span>Chat on WhatsApp (+91 90428 53189)</span> ↗
+        </a>
+      </div>
+
+      <div class="info-block">
+        <h3>Direct Contact</h3>
+        <p>
+          <strong>Phone:</strong><br>
+          <a href="tel:+919042853189" class="contact-channel-link">📞 +91 90428 53189</a>
+        </p>
+        <p>
+          <strong>Email:</strong><br>
+          <a href="mailto:madrasfoodiesconsultancy@gmail.com" class="contact-channel-link">✉️ madrasfoodiesconsultancy@gmail.com</a>
+        </p>
+        <p>
+          <strong>Instagram:</strong><br>
+          <a href="https://www.instagram.com/madrasfoodiesconsultancy?stkn=c212cW80NTV5NGFh" target="_blank" rel="noopener noreferrer" class="contact-channel-link instagram-link">
+            📸 @madrasfoodiesconsultancy ↗
+          </a>
+        </p>
+      </div>
+
+      <div class="info-block">
+        <h3>Consultancy Headquarters</h3>
+        <p>Chennai, Tamil Nadu, India</p>
+        <p class="muted">Active consulting footprint across India & Malaysia.</p>
+        <p class="muted">Operating Hours: Mon – Sat, 9:30 AM – 6:30 PM IST</p>
+      </div>
+
+      <div class="info-block highlight-card">
+        <h4>⚡ Rapid Response Guarantee</h4>
+        <p>All inquiries are reviewed by principal consultant Yuvaraj with a callback or tailored proposal within 24 to 48 hours.</p>
+      </div>
+    </aside>
+  </div>
+</section>
+{% endblock %}

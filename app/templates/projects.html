@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% block title %}Projects — Madras Foodies Consultancy{% endblock %}
+
+{% block content %}
+
+<!-- ========== PAGE HERO ========== -->
+<section class="page-hero section">
+  <span class="eyebrow">02 / Portfolio</span>
+  <h1>Selected projects across India &amp; Malaysia.</h1>
+  <p>A proven portfolio of hospitality concepts, turnkey restaurant setups, bar lounges, and operational consulting projects.</p>
+
+  <div class="filter-bar">
+    <a href="{{ url_for('main.projects', category='All') }}"
+       class="filter-btn {% if selected_category == 'All' or not selected_category %}active{% endif %}">All Projects</a>
+    <a href="{{ url_for('main.projects', category='India') }}"
+       class="filter-btn {% if selected_category == 'India' %}active{% endif %}">India</a>
+    <a href="{{ url_for('main.projects', category='International') }}"
+       class="filter-btn {% if selected_category == 'International' %}active{% endif %}">International</a>
+  </div>
+</section>
+
+
+<!-- ========== STICKY NOTES DIAGONAL TIMELINE ========== -->
+{% if projects %}
+<section class="sn-section">
+
+  <!-- SVG overlay for diagonal connectors — filled by JS -->
+  <svg class="sn-svg-overlay" aria-hidden="true"></svg>
+
+  <div class="sn-track" id="snTrack">
+
+    {% set note_colours = ['#FFF0E6','#E6EEFF','#EDE6FF','#E6FFF3','#FFF6E6','#E6F6FF','#F3E6FF','#E6FFE6'] %}
+    {% set pin_colours  = ['#E8724A','#5B8FDE','#9B6FDE','#4CAF82','#E8B44A','#4AB8E8','#C06FDE','#5DC06F'] %}
+
+    {% for project in projects %}
+      {% set side = 'left' if loop.index0 % 2 == 0 else 'right' %}
+      {% set nc   = note_colours[loop.index0 % 8] %}
+      {% set pc   = pin_colours [loop.index0 % 8] %}
+
+      <div class="sn-item sn-item--{{ side }}" data-order="{{ project.order }}">
+
+        <div class="sn-card" style="--nc:{{ nc }}; --pc:{{ pc }};" data-card>
+
+          <!-- Push-pin -->
+          <div class="sn-pin" style="background:{{ pc }};">
+            <div class="sn-pin-head"></div>
+            <div class="sn-pin-stem" style="background:{{ pc }};"></div>
+          </div>
+
+          <!-- ── Image slot ──────────────────────────────────────────── -->
+          <div class="sn-img-slot"
+               style="background: {{ project.fallbackGradient if project.fallbackGradient else 'linear-gradient(135deg,#e0e0d8,#d4d4cc)' }};"
+               data-img-wrap>
+
+            {% if images_enabled and project.projectImage %}
+              <!-- Real image — skeleton shown while loading, onerror → gradient fallback -->
+              <div class="sn-img-skeleton" data-skeleton></div>
+              <img
+                class="sn-img"
+                src="{{ project.projectImage }}"
+                alt="{{ project.imageAlt | default(project.name) }}"
+                title="{{ project.imageCredit | default('') }}"
+                loading="lazy"
+                data-fallback-gradient="{{ project.fallbackGradient | default('') }}"
+                onload="this.previousElementSibling.remove(); this.classList.add('sn-img--loaded')"
+                onerror="this.previousElementSibling.remove(); this.parentElement.innerHTML='<span class=\'sn-img-label\'>🍽️ ' + '{{ project.name | e }}' + '</span>'; this.parentElement.style.background='{{ project.fallbackGradient | default(\"linear-gradient(135deg,#e0e0d8,#d4d4cc)\") }}';"
+              >
+              <!-- Unsplash attribution (tiny, on hover via title attr) -->
+              {% if project.imageType == 'food_fallback' %}
+                <span class="sn-img-attr">📷 Unsplash</span>
+              {% elif project.imageType == 'exact_business' %}
+                <span class="sn-img-attr sn-img-attr--verified">✅ Verified photo</span>
+              {% endif %}
+
+            {% else %}
+              <!-- Placeholder (images disabled or no image configured) -->
+              <span class="sn-img-label">📷 Project Image</span>
+            {% endif %}
+
+          </div>
+          <!-- ── end image slot ────────────────────────────────────── -->
+
+          <!-- Text content -->
+          <div class="sn-body">
+            <div class="sn-top-row">
+              <span class="sn-num" style="color:{{ pc }};">0{{ project.order }}</span>
+              <span class="sn-badge">{{ project.category }}</span>
+              {% if images_enabled and project.imageType == 'exact_business' %}
+                <span class="sn-verified-badge" title="Verified business photo">✅</span>
+              {% endif %}
+            </div>
+            <h3 class="sn-title">{{ project.name }}</h3>
+            <p  class="sn-loc">📍 {{ project.location }}</p>
+            <p  class="sn-desc">{{ project.description }}</p>
+          </div>
+
+        </div><!-- /.sn-card -->
+      </div><!-- /.sn-item -->
+
+    {% endfor %}
+  </div><!-- /#snTrack -->
+</section>
+
+{% else %}
+<section class="section">
+  <div class="no-projects">
+    <p>No projects found in this category.</p>
+    <a class="button" href="{{ url_for('main.projects') }}">View All Projects</a>
+  </div>
+</section>
+{% endif %}
+
+
+<!-- ========== CTA ========== -->
+<section class="cta section">
+  <span class="eyebrow">Ready for your launch?</span>
+  <h2>Let us help you bring your restaurant or café to life.</h2>
+  <a class="button" href="{{ url_for('main.contact') }}">Consult With Us ↗</a>
+</section>
+
+
+<!-- ========== Diagonal connector JS ========== -->
+<script>
+(function () {
+  function drawConnectors() {
+    const section = document.querySelector('.sn-section');
+    const svg     = document.querySelector('.sn-svg-overlay');
+    const cards   = Array.from(document.querySelectorAll('[data-card]'));
+    if (!svg || cards.length < 2) return;
+
+    const sRect = section.getBoundingClientRect();
+    svg.setAttribute('width',  sRect.width);
+    svg.setAttribute('height', section.scrollHeight);
+    svg.innerHTML = `
+      <defs>
+        <style>
+          .sn-line { fill:none; stroke:#bbb; stroke-width:2;
+                     stroke-dasharray:7 10; stroke-linecap:round; }
+        </style>
+      </defs>`;
+
+    for (let i = 0; i < cards.length - 1; i++) {
+      const a = cards[i].getBoundingClientRect();
+      const b = cards[i + 1].getBoundingClientRect();
+
+      const x1 = a.left - sRect.left + a.width  / 2;
+      const y1 = a.top  - sRect.top  + a.height;
+      const x2 = b.left - sRect.left + b.width  / 2;
+      const y2 = b.top  - sRect.top;
+      const my = (y1 + y2) / 2;
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('class', 'sn-line');
+      path.setAttribute('d', `M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`);
+      svg.appendChild(path);
+
+      const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      dot.setAttribute('cx', (x1 + x2) / 2);
+      dot.setAttribute('cy', my);
+      dot.setAttribute('r',  5);
+      dot.setAttribute('fill', '#ccc');
+      svg.appendChild(dot);
+    }
+  }
+
+  /* Re-draw after every image loads (images change card heights) */
+  document.querySelectorAll('.sn-img').forEach(img => {
+    img.addEventListener('load',  drawConnectors);
+    img.addEventListener('error', drawConnectors);
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', drawConnectors);
+  } else {
+    drawConnectors();
+  }
+  window.addEventListener('resize', drawConnectors);
+  window.addEventListener('load',   drawConnectors);
+})();
+</script>
+
+{% endblock %}
